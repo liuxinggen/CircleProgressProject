@@ -7,6 +7,9 @@
     android:background="#ffffff"
     tools:context="com.gifts.circleprogressproject.MainActivity">
 
+
+
+
     <com.gifts.circleprogressproject.ProgressView
         android:id="@+id/circleProgress"
         android:layout_width="match_parent"
@@ -14,9 +17,7 @@
         app:progress_paint_width="30dp"
         app:progress_text_color="@color/colorAccent"
         app:progress_text_size="40dp"
-
         >
-
     </com.gifts.circleprogressproject.ProgressView>
 
 </LinearLayout>

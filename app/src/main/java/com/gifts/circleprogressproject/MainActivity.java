@@ -16,7 +16,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 当前成绩
      */
-    private int currentScore=180;
+    private int currentScore = 180;
+    /**
+     * 转动的速度
+     */
+    private long speed = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
         view = findViewById(R.id.circleProgress);
         view.setTotalScore(totalScore);
         /**
-         * 进度条从0到100的动画
+         * 进度条从0到指定数字的动画
          * 除了startAnimator1()方法中用的ValueAnimator.ofInt()，我们还有
          * ofFloat()、ofObject()这些生成器的方法;
          * 我们可以通过ofObject()去实现自定义的数值生成器
          */
         ValueAnimator animator = ValueAnimator.ofFloat(0, currentScore);
-        animator.setDuration(2000);
+        animator.setDuration(speed);
         /**
          *  Interpolators  插值器，用来控制具体数值的变化规律
          *  LinearInterpolator  线性
@@ -48,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                  * 通过调用getAnimatedValue()获取到每个时间因子所产生的Value。
                  * */
                 float current = (float) valueAnimator.getAnimatedValue();
-                view.setmCurrent((int)current);
+                view.setmCurrent((int) current);
             }
         });
         animator.start();
