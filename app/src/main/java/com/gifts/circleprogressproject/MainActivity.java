@@ -102,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 totalScore = Integer.parseInt(data1);
                 currentScore = Integer.parseInt(data2);
+                if (currentScore > totalScore) {
+                    Toast.makeText(MainActivity.this, "当前成绩不能大于总成绩", Toast.LENGTH_SHORT).show();
+                    return;
+
+                }
                 initView();
             }
         });
