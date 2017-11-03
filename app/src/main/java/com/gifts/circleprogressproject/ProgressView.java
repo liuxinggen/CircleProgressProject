@@ -22,10 +22,6 @@ import android.view.View;
  */
 public class ProgressView extends View {
     /**
-     * 当前进度
-     */
-    private int mCurrent;
-    /**
      * 背景的圆
      */
     private Paint mPaintOut;
@@ -46,9 +42,29 @@ public class ProgressView extends View {
     private int mTextColor = Color.BLACK;
     /**
      * 开始的角度
+     * 直角坐标系
+     * 左边  180
+     * 上面  270
+     * 右边  0
+     * 下边  90
      */
     private int startAngle = 135;
+    /**
+     * 要画的圆弧的度数
+     * 圆 ：360
+     */
+    private int sweepAngle = 270;
+    /**
+     * 总成绩
+     */
+    private int totalScore = 100;
+    /**
+     * 当前成绩
+     */
+    private int mCurrent;
 
+
+    private OnLoadingCompleteListenter onLoadingCompleteListenter;
 
     public ProgressView(Context context) {
         this(context, null);
@@ -103,9 +119,8 @@ public class ProgressView extends View {
         mPaintText = new Paint();
         mPaintText.setAntiAlias(true);
         mPaintText.setColor(mTextColor);
-        mPaintText.setStrokeWidth(mTextSize);
-
-
+        mPaintText.setStyle(Paint.Style.STROKE);
+        mPaintText.setTextSize(mTextSize);
     }
 
 
@@ -124,19 +139,24 @@ public class ProgressView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        /**
+         * mPaintWidth  圆弧的宽度
+         *
+         * RectF就相当于一个画布，画布有上下左右四个顶点，
+         *
+         */
         RectF rectF = new RectF(mPaintWidth / 2,
                 mPaintWidth / 2,
                 getWidth() - mPaintWidth / 2,
                 getHeight() - mPaintWidth / 2);
 
-        canvas.drawArc(rectF, startAngle, 270, false, mPaintOut);
+        canvas.drawArc(rectF, startAngle, sweepAngle, false, mPaintOut);
 
-        mCurrent = 50;
-        float sweepAngle = mCurrent * 270 / 100;
-        canvas.drawArc(rectF, startAngle, sweepAngle, false, mPaintCurrent);
+        float currentAngle = mCurrent * sweepAngle / totalScore;
+        canvas.drawArc(rectF, startAngle, currentAngle, false, mPaintCurrent);
 
-//        String text = mCurrent + "分";
-        String text = "我是测试文字";
+        String text = mCurrent + "分";
+//        String text = "我是测试文字";
         //测量文字的宽度
         float textWidth = mPaintText.measureText(text, 0, text.length());
         //测量文字的高度
@@ -153,6 +173,53 @@ public class ProgressView extends View {
         float dy = getHeight() / 2 - textHeight / 2;
         canvas.drawText(text, dx, dy, mPaintText);
 
+        /**
+         * 完成
+         */
+        if (getOnLoadingCompleteListenter() != null && mCurrent == totalScore) {
+            getOnLoadingCompleteListenter().onComplete();
+        }
+
+    }
+
+
+    public int getmCurrent() {
+        return mCurrent;
+    }
+
+    /**
+     * 设置当前进度并且重新绘制界面
+     *
+     * @param mCurrent
+     */
+    public void setmCurrent(int mCurrent) {
+        this.mCurrent = mCurrent;
+        //重新绘制的方法
+        invalidate();
+    }
+
+    public int getStartAngle() {
+        return startAngle;
+    }
+
+    public void setStartAngle(int startAngle) {
+        this.startAngle = startAngle;
+    }
+
+    public int getSweepAngle() {
+        return sweepAngle;
+    }
+
+    public void setSweepAngle(int sweepAngle) {
+        this.sweepAngle = sweepAngle;
+    }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(int totalScore) {
+        this.totalScore = totalScore;
     }
 
     /**
@@ -174,4 +241,15 @@ public class ProgressView extends View {
         return (int) (dpValue * scale + 0.5f);
     }
 
+    interface OnLoadingCompleteListenter {
+        void onComplete();
+    }
+
+    public OnLoadingCompleteListenter getOnLoadingCompleteListenter() {
+        return onLoadingCompleteListenter;
+    }
+
+    public void setOnLoadingCompleteListenter(OnLoadingCompleteListenter onLoadingCompleteListenter) {
+        this.onLoadingCompleteListenter = onLoadingCompleteListenter;
+    }
 }
