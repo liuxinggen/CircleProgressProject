@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="circle_progress_view">
+        <!--进度条的宽度-->
+        <attr name="progress_paint_width" format="dimension"></attr>
+        <!--进度条颜色-->
+        <attr name="progress_paint_color" format="color"></attr>
+        <!--字体颜色-->
+        <attr name="progress_text_color" format="color"></attr>
+        <!--字体大小-->
+        <attr name="progress_text_size" format="dimension"></attr>
+    </declare-styleable>
+
+
+</resources>
