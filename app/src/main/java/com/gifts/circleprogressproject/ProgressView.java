@@ -32,14 +32,18 @@ public class ProgressView extends View {
     /**
      * 字体
      */
-    private Paint mPaintText;
+    private Paint mPaintTextTop;
+    private Paint mPaintTextBottom;
 
     /**
      * 自定义属性
      */
-    private float mTextSize, mPaintWidth;
-    private int mPaintColor = Color.RED;
-    private int mTextColor = Color.BLACK;
+    private float mTextSizeTop;
+    private float mPaintWidth;
+    private int mPaintColor = getResources().getColor(R.color.paint_current);
+    private int mTextColorTop = Color.BLACK;
+    private int mTextColorBottom = Color.BLACK;
+    private float mTextSizeBottom;
     /**
      * 开始的角度
      * 直角坐标系
@@ -84,18 +88,24 @@ public class ProgressView extends View {
         mPaintWidth = typedArray
                 .getDimension(R.styleable.circle_progress_view_progress_paint_width,
                         dip2px(context, 10));
-        mTextSize = typedArray
-                .getDimension(R.styleable.circle_progress_view_progress_text_size,
+        mTextSizeTop = typedArray
+                .getDimension(R.styleable.circle_progress_view_progress_text_size_top,
                         dip2px(context, 18));
         mPaintColor = typedArray.getColor(R.styleable.circle_progress_view_progress_paint_color,
                 mPaintColor);
-        mTextColor = typedArray.getColor(R.styleable.circle_progress_view_progress_text_color,
-                mTextColor);
+        mTextColorTop = typedArray.getColor(R.styleable.circle_progress_view_progress_text_color_top,
+                mTextColorTop);
+        mTextSizeBottom = typedArray
+                .getDimension(R.styleable.circle_progress_view_progress_text_size_bottom,
+                        dip2px(context, 18));
+        mTextColorBottom = typedArray
+                .getColor(R.styleable.circle_progress_view_progress_text_color_bottom,
+                        mTextColorTop);
         typedArray.recycle();//释放
 
         mPaintOut = new Paint();
         mPaintOut.setAntiAlias(true);
-        mPaintOut.setColor(Color.GRAY);
+        mPaintOut.setColor(getResources().getColor(R.color.paint_out));
         mPaintOut.setStrokeWidth(mPaintWidth);
         /**
          * 画笔样式
@@ -116,11 +126,17 @@ public class ProgressView extends View {
         mPaintCurrent.setStyle(Paint.Style.STROKE);
         mPaintCurrent.setStrokeCap(Paint.Cap.ROUND);
 
-        mPaintText = new Paint();
-        mPaintText.setAntiAlias(true);
-        mPaintText.setColor(mTextColor);
-        mPaintText.setStyle(Paint.Style.STROKE);
-        mPaintText.setTextSize(mTextSize);
+        mPaintTextTop = new Paint();
+        mPaintTextTop.setAntiAlias(true);
+        mPaintTextTop.setColor(mTextColorTop);
+        mPaintTextTop.setStyle(Paint.Style.STROKE);
+        mPaintTextTop.setTextSize(mTextSizeTop);
+
+        mPaintTextBottom = new Paint();
+        mPaintTextBottom.setAntiAlias(true);
+        mPaintTextBottom.setColor(mTextColorBottom);
+        mPaintTextBottom.setStyle(Paint.Style.STROKE);
+        mPaintTextBottom.setTextSize(mTextSizeBottom);
     }
 
 
@@ -143,6 +159,8 @@ public class ProgressView extends View {
          * mPaintWidth  圆弧的宽度
          *
          * RectF就相当于一个画布，画布有上下左右四个顶点，
+         * 宽度为 right - left
+         * 高度为 bottom - top
          *
          */
         RectF rectF = new RectF(mPaintWidth / 2,
@@ -155,23 +173,46 @@ public class ProgressView extends View {
         float currentAngle = mCurrent * sweepAngle / totalScore;
         canvas.drawArc(rectF, startAngle, currentAngle, false, mPaintCurrent);
 
-        String text = mCurrent + "分";
-//        String text = "我是测试文字";
+        String text1 = mCurrent + "分";
+        String text2 = "本次考试成绩";
+
+        /**
+         * 半径
+         */
+        float radius = (getWidth() - mPaintWidth) / 2;
+        /**
+         * 圆心和弦的距离
+         */
+        float dis = (float) Math.sqrt((radius * radius) / 2);
+
+        /**
+         * 绘制顶部文字
+         */
         //测量文字的宽度
-        float textWidth = mPaintText.measureText(text, 0, text.length());
+        float textWidth1 = mPaintTextTop.measureText(text1, 0, text1.length());
         //测量文字的高度
-        float textHeight = (float) getTxtHeight(mPaintText);
+        float textHeight1 = (float) getTxtHeight(mPaintTextTop);
+        float textHeight2 = (float) getTxtHeight(mPaintTextBottom);
         /**
          * 基线x的坐标即为：
          * view宽度的一半减去文字宽度的一半
          */
-        float dx = getWidth() / 2 - textWidth / 2;
+        float dx1 = getWidth() / 2 - textWidth1 / 2;
         /**
          * 基线y的坐标为：
          * view高度的一半减去文字高度的一半
          */
-        float dy = getHeight() / 2 - textHeight / 2;
-        canvas.drawText(text, dx, dy, mPaintText);
+        float dy1 = getHeight() / 2 - textHeight1 / 2 + dis - textHeight2;
+        /**
+         * 绘制底部文字
+         */
+        float textWidth2 = mPaintTextBottom.measureText(text2, 0, text2.length());
+        float dx2 = getWidth() / 2 - textWidth2 / 2;
+        float dy2 = getHeight() / 2 - textHeight2 / 2 + dis;
+
+        canvas.drawText(text1, dx1, dy1, mPaintTextTop);
+        canvas.drawText(text2, dx2, dy2, mPaintTextBottom);
+
 
         /**
          * 完成

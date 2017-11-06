@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 当前成绩
      */
-    private int currentScore = 100;
+    private int currentScore = 98;
     /**
      * 转动的速度
      */

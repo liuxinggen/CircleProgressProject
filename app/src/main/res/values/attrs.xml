@@ -6,9 +6,13 @@
         <!--进度条颜色-->
         <attr name="progress_paint_color" format="color"></attr>
         <!--字体颜色-->
-        <attr name="progress_text_color" format="color"></attr>
+        <attr name="progress_text_color_top" format="color"></attr>
         <!--字体大小-->
-        <attr name="progress_text_size" format="dimension"></attr>
+        <attr name="progress_text_size_top" format="dimension"></attr>
+        <!--字体颜色-->
+        <attr name="progress_text_color_bottom" format="color"></attr>
+        <!--字体大小-->
+        <attr name="progress_text_size_bottom" format="dimension"></attr>
     </declare-styleable>
 
 
